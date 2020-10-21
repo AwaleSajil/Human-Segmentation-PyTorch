@@ -7,6 +7,8 @@ import numpy as np
 from torch.nn import functional as F
 
 from models import UNet
+from models import ICNet
+
 from dataloaders import transforms
 from utils import utils
 
@@ -45,7 +47,7 @@ args = parser.parse_args()
 #------------------------------------------------------------------------------
 # Video input
 cap = cv2.VideoCapture(args.video)
-_, frame = cap.read()
+ret, frame = cap.read()
 H, W = frame.shape[:2]
 
 # Video output
@@ -69,8 +71,8 @@ else:
 #------------------------------------------------------------------------------
 #	Create model and load weights
 #------------------------------------------------------------------------------
-model = UNet(
-    backbone="mobilenetv2",
+model = ICNet(
+    backbone="resnet18",
     num_classes=2,
 	pretrained_backbone=None
 )
@@ -88,7 +90,9 @@ i = 0
 while(cap.isOpened()):
 	# Read frame from camera
 	start_time = time()
-	_, frame = cap.read()
+	ret, frame = cap.read()
+	if ret != True:
+		break
 	# image = cv2.transpose(frame[...,::-1])
 	image = frame[...,::-1]
 	h, w = image.shape[:2]
