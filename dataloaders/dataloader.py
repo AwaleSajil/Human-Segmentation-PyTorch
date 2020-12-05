@@ -148,7 +148,7 @@ class SegmentationDataset(Dataset):
 		image = np.transpose(image, axes=(2, 0, 1))
 
 		# Preprocess label
-		label[label>0] = 1
+		label[label>0] = 1 #here for every pixel, if the value is greater than 0 then replace it with 1
 		if self.one_hot:
 			label = (np.arange(label.max()+1) == label[...,None]).astype(int)
 
