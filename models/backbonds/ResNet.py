@@ -160,6 +160,20 @@ class ResNet(BaseBackbone):
 			x = self.fc(x)
 		# Output
 		return x
+  
+	#Added this function...may be the auther forget this function for this ResNet Model
+	def _load_pretrained_model(self, pretrained_file):
+		pretrain_dict = torch.load(pretrained_file, map_location='cpu')
+		model_dict = {}
+		state_dict = self.state_dict()
+		print("[MobileNetV2] Loading pretrained model...")
+		for k, v in pretrain_dict.items():
+			if k in state_dict:
+				model_dict[k] = v
+			else:
+				print(k, "is ignored")
+		state_dict.update(model_dict)
+		self.load_state_dict(state_dict)
 
 
 	def _make_layer(self, block, planes, num_layers, stride=1, dilation=1, grids=None):
