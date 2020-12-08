@@ -92,7 +92,7 @@ class BaseTrainer:
 			return
 		data, _ = next(iter(self.data_loader))
 		data = data.to(self.device)
-		self.writer_train.add_graph(self.model, data)
+		self.writer_train.addGraph(self.model, data)
 
 	def train(self):
 		#first lets write the graph to tensorboardX if possible
