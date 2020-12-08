@@ -13,8 +13,9 @@ class BaseTrainer:
 	"""
 	Base class for all trainers
 	"""
-	def __init__(self, model, loss, metrics, optimizer, resume, config, train_logger=None):
+	def __init__(self, model, loss, metrics, optimizer, resume, config, train_logger=None, data_loader = None):
 		self.config = config
+		self.data_loader = data_loader #if any sent
 
 		# Setup directory for checkpoint saving
 		start_time = datetime.datetime.now().strftime('%m%d_%H%M%S')
@@ -85,9 +86,18 @@ class BaseTrainer:
 		device = torch.device('cuda:0' if n_gpu_use > 0 else 'cpu')
 		list_ids = list(range(n_gpu_use))
 		return device, list_ids
-
+	
+	def addGraph_Tensorboard(self):
+		if self.data_loader == None:
+			return
+		data, _ = next(iter(self.data_loader))
+		data = data.to(self.device)
+		self.writer_train.add_graph(self.model, data)
 
 	def train(self):
+		#first lets write the graph to tensorboardX if possible
+		addGraph_Tensorboard(self)
+		
 		for epoch in range(self.start_epoch, self.epochs + 1):
 			self.logger.info("\n----------------------------------------------------------------")
 			self.logger.info("[EPOCH %d]" % (epoch))
