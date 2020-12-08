@@ -27,6 +27,9 @@ class WriterTensorboardX():
     def set_step(self, step):
         self.step = step
 
+    def addGraph(self, model, data):
+        self.writer.add_graph(model, data)
+        
     def __getattr__(self, name):
         """
         If visualization is configured to use:
