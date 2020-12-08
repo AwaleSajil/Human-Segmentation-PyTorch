@@ -88,11 +88,13 @@ class BaseTrainer:
 		return device, list_ids
 	
 	def addGraph_Tensorboard(self):
-		if self.data_loader == None:
-			return
-		data, _ = next(iter(self.data_loader))
-		data = data.to(self.device)
-		self.writer_train.add_graph(self.model, data)
+		print("Hi")
+# 		if self.data_loader == None:
+# 			return
+# 		data, _ = next(iter(self.data_loader))
+# 		data = data.to(self.device)
+# 		self.writer_train.add_graph(self.model, data)
+
 
 	def train(self):
 		#first lets write the graph to tensorboardX if possible
