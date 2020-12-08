@@ -7,17 +7,46 @@ from glob import glob
 from tqdm import tqdm
 from random import shuffle, seed
 from multiprocessing import Pool, Manager
+import argparse
 
+#------------------------------------------------------------------------------
+#	Parse from command line arguments
+#------------------------------------------------------------------------------
+
+parser = argparse.ArgumentParser(description='Create data,target pir files')
+
+parser.add_argument('-d', '--data', default=[], nargs='+', help='directory path to images')
+
+parser.add_argument('-l', '--label', default=[], nargs='+', help='directory path to label images')
+
+parser.add_argument('-s', '--split', default=0.9, type = float, help='train/test split ratio')
+
+CLargs = parser.parse_args()
 
 #------------------------------------------------------------------------------
 #	Main execution
 #------------------------------------------------------------------------------
 # Get files
-image_files  = sorted(glob("/media/antiaegis/storing/datasets/HumanSeg/EG/data_for_run/images/*.*"))
-image_files += sorted(glob("/media/antiaegis/storing/datasets/HumanSeg/Supervisely/data_for_run/images/*.*"))
+image_files = []
+for Dpath in CLargs.data:
+  #check if the path has / at the end, otherwise add it
+  if (Dpath[-1]) != "/":
+    CompletePath = Dpath + "/*.*"
+  else:
+    CompletePath = Dpath + "*.*"
+  
+  image_files += sorted(glob(CompletePath))
 
-label_files  = sorted(glob("/media/antiaegis/storing/datasets/HumanSeg/EG/data_for_run/labels/*.*"))
-label_files += sorted(glob("/media/antiaegis/storing/datasets/HumanSeg/Supervisely/data_for_run/labels/*.*"))
+#get labels
+label_files = []
+for Lpath in CLargs.label:
+  #check if the path has / at the end, otherwise add it
+  if (Lpath[-1]) != "/":
+    CompletePath = Lpath + "/*.*"
+  else:
+    CompletePath = Lpath + "*.*"
+  
+  label_files += sorted(glob(CompletePath))
 
 assert len(image_files)==len(label_files)
 n_files = len(image_files)
@@ -48,6 +77,7 @@ for _ in tqdm(pools.imap_unordered(pool_func, args), total=len(label_files)):
 
 foregrounds = [element for element in foregrounds]
 backgrounds = [element for element in backgrounds]
+
 print("foregrounds:", sum(foregrounds)/n_files)
 print("backgrounds:", sum(backgrounds)/n_files)
 print("ratio:", sum(foregrounds) / sum(backgrounds))
@@ -61,9 +91,9 @@ for idx, foreground in enumerate(foregrounds):
 print("Number of averg indices:", len(averg_ind))
 
 # Split train/valid
-RATIO = 0.9
-TRAIN_FILE = "dataset/antiaegis_train_mask.txt"
-VALID_FILE = "dataset/antiaegis_valid_mask.txt"
+RATIO = CLargs.split
+TRAIN_FILE = "dataset/train_mask.txt"
+VALID_FILE = "dataset/valid_mask.txt"
 
 shuffle(averg_ind)
 ind_train = averg_ind[:int(RATIO*len(averg_ind))]
