@@ -32,7 +32,7 @@ class Trainer(BaseTrainer):
 	"""
 	def __init__(self, model, loss, metrics, optimizer, resume, config,
 				 data_loader, valid_data_loader=None, lr_scheduler=None, train_logger=None):
-		super(Trainer, self).__init__(model, loss, metrics, optimizer, resume, config, train_logger)
+		super(Trainer, self).__init__(model, loss, metrics, optimizer, resume, config, train_logger, data_loader)
 		self.config = config
 		self.data_loader = data_loader
 		self.valid_data_loader = valid_data_loader
