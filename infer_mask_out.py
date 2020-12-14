@@ -145,4 +145,5 @@ for imagepath in tqdm(glob.iglob(imagedirs)):
         cv2.imwrite(savingpath, overLayImage)
 
 inferTimes = np.array(inferTimes)
+print("Total images given = " + str(inferTimes.shape[0]))
 print("Mean Inference Time = " + str(np.mean(inferTimes)) + " Seconds")
