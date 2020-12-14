@@ -66,7 +66,7 @@ elif str(args.model) == 'BiSeNet':
     pretrained_backbone=None
     )
 elif str(args.model) == 'DeepLabV3Plus':
-    model = Unet(
+    model = DeepLabV3Plus(
         backbone="resnet18",
         num_classes=2,
     pretrained_backbone=None
