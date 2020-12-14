@@ -1,4 +1,4 @@
-
+%%writefile /content/Human-Segmentation-PyTorch/infer_mask_out.py
 #------------------------------------------------------------------------------
 #	Libraries
 #------------------------------------------------------------------------------
@@ -11,6 +11,7 @@ from models import UNet
 from models import ICNet
 from models import BiSeNet
 from models import DeepLabV3Plus
+from models import UNetPlus
 
 from dataloaders import transforms
 from utils import utils
@@ -28,7 +29,7 @@ parser.add_argument('--use_cuda', action='store_true', default=False,
                     help='Use GPU acceleration')
 
 parser.add_argument('--model', type = str, default="ICNet",
-                    help='Choose models between ICnet, UNet, BiSeNet and DeepLabV3Plus')
+                    help='Choose models between ICnet, UNet, BiSeNet and DeepLabV3Plus and UNetPlus')
 
 parser.add_argument('--input_sz', type=int, default=320,
                     help='Input size')
@@ -67,6 +68,12 @@ elif str(args.model) == 'BiSeNet':
     )
 elif str(args.model) == 'DeepLabV3Plus':
     model = DeepLabV3Plus(
+        backbone="resnet18",
+        num_classes=2,
+    pretrained_backbone=None
+    )
+elif str(args.model) == 'UNetPlus':
+    model = UNetPlus(
         backbone="resnet18",
         num_classes=2,
     pretrained_backbone=None
