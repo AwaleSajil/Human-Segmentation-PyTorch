@@ -54,7 +54,7 @@ args = parser.parse_args()
 
 model = None
 if str(args.model) == 'UNet':
-    model = Unet(
+    model = UNet(
         backbone="mobilenetv2",
         num_classes=2,
     pretrained_backbone=None
