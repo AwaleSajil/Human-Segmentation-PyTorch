@@ -1,4 +1,3 @@
-
 #------------------------------------------------------------------------------
 #	Libraries
 #------------------------------------------------------------------------------
@@ -61,7 +60,7 @@ if str(args.model) == 'UNet':
     pretrained_backbone=None
     )
 elif str(args.model) == 'BiSeNet':
-    model = Unet(
+    model = BiSeNet(
         backbone="resnet18",
         num_classes=2,
     pretrained_backbone=None
