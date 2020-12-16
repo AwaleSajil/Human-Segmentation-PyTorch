@@ -75,7 +75,6 @@ elif str(args.model) == 'UNetPlus':
     model = UNetPlus(
         backbone="resnet18",
         num_classes=2,
-    pretrained_backbone=None
     )
 else:
     model = ICNet(
