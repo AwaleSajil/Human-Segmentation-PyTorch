@@ -1,3 +1,4 @@
+#Demo for this create pair can be found at :https://colab.research.google.com/drive/1WP-iY6hVHEVtzKhIxsCYdrEnwUplZYm4?usp=sharing
 #------------------------------------------------------------------------------
 #	Libraries
 #------------------------------------------------------------------------------
@@ -83,45 +84,10 @@ for Lpath, Dpath in zip(data_labels, datas):
       index = data_num.index(label_num[idx])
       image_files.append(data_paths[index])
 
-
-#generete Previous Image Path list
-prev_image_files = []
-for image_file in image_files:
-  imgdir = '/'.join((str(image_file)).split('/')[:-1] + [''])
-  image_name_w_e = path_leaf(image_file)
-  image_name = image_name_w_e.split('.')[0]
-  image_number = image_name.split('_')[-1]
-  image_number_int = int(image_number)
-  prev_image_number_int = image_number_int - 1
-  prev_image_number = None
-  if (image_number == str(image_number_int)):
-    #in non preceeding 0 format
-    prev_image_number = str(prev_image_number_int)
-  else:
-    #with formated preceeding zeros
-    formatstr = '0' + str(len(image_number)) + 'd'
-    prev_image_number = str(format(prev_image_number_int, formatstr))
-
-  #finally generete expected prev_image_filename
-  image_name_pre_components = '_'.join(image_name.split('_')[:-1] + [''])
-  prev_image_name_w_e = image_name_pre_components + prev_image_number + '.' + image_name_w_e.split('.')[-1]\
-
-  prev_image_file = imgdir + prev_image_name_w_e
-
-  ##NOW chwck if the prev_image_file exists
-  if os.path.exists(prev_image_file):
-    prev_image_files.append(prev_image_file)
-  else:
-    prev_image_files.append(None)
-
-
-
 # assert len(image_files)==len(label_files)
 n_files = len(image_files)
 
 # Shuffle
-seed(0)
-shuffle(prev_image_files)
 seed(0)
 shuffle(image_files)
 seed(0)
@@ -136,8 +102,8 @@ def writePairFile(FILE_NAME, index):
   global prev_image_files, image_files, label_files
   fp = open(FILE_NAME, "w")
   for idx in index:
-      prev_image_file, image_file, label_file = prev_image_files[idx], image_files[idx], label_files[idx]
-      line = "%s, %s, %s" % (prev_image_file, image_file, label_file)
+      image_file, label_file = image_files[idx], label_files[idx]
+      line = "%s, %s" % (image_file, label_file)
       fp.writelines(line + "\n")
 
 def checkDataset(FILE_NAME, description = 'dataset'):
@@ -148,9 +114,7 @@ def checkDataset(FILE_NAME, description = 'dataset'):
 
   print("Checking %d %s samples..." % (len(lines), description))
   for line in lines:
-      prev_image_files, image_file, label_file = line
-      if not os.path.exists(prev_image_files):
-          print("%s does not exist!" % (prev_image_files))
+      image_file, label_file = line
       if not os.path.exists(image_file):
           print("%s does not exist!" % (image_file))
       if not os.path.exists(label_file):
@@ -187,9 +151,7 @@ RATIO = [float(CLargs.balance_ratio[0]), float(CLargs.balance_ratio[1])]
 selected_ind = []
 for idx, foreground in enumerate(foregrounds):
     if RATIO[0] <= foreground <= RATIO[1]:
-        #also make sure it has prev_image_file
-        if prev_image_files[idx] != None:
-          selected_ind.append(idx)
+        selected_ind.append(idx)
 
 print("Number of selected indices:", len(selected_ind))
 
