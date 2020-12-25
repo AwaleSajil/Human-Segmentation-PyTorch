@@ -7,20 +7,20 @@
 		"args": {
 			"backbone": "resnet18",
 			"num_classes": 2,
-			"pretrained_backbone": "/data4/livesegmentation/thuync/PyTorch-pretrained/resnet18.pth"
+			"pretrained_backbone": "/content/resnet18-5c106cde.pth"
 		}
 	},
 
 	"train_loader": {
 		"type": "SegmentationDataLoader",
 		"args":{
-			"pairs_file": "dataset/train_mask_server.txt",
+			"pairs_file": "dataset/train_mask.txt",
 			"color_channel": "RGB",
 			"resize": 320,
 			"padding_value": 0,
 			"is_training": true,
 			"noise_std": 0,
-			"crop_range": [1.0, 1.0],
+			"crop_range": [0.5, 1.0],
 			"flip_hor": 0.5,
 			"rotate": 0.0,
 			"angle": 10,
@@ -36,7 +36,7 @@
 	"valid_loader": {
 		"type": "SegmentationDataLoader",
 		"args":{
-			"pairs_file": "dataset/valid_mask_server.txt",
+			"pairs_file": "dataset/valid_mask.txt",
 			"color_channel": "RGB",
 			"resize": 320,
 			"padding_value": 0,
@@ -73,9 +73,9 @@
 	},
 
 	"trainer": {
-		"epochs": 80,
-		"save_dir": "/data4/livesegmentation/thuync/checkpoints/PyTorch/",
-		"save_freq": 1,
+		"epochs": 120,
+		"save_dir": "/gdrive/MyDrive/MotionSegExperiments/dev/Checkpoints/",
+		"save_freq": 2,
 		"verbosity": 2,
 		"monitor": "valid_loss",
 		"monitor_mode": "min"
@@ -83,6 +83,6 @@
 
 	"visualization":{
 		"tensorboardX": true,
-		"log_dir": "/data4/livesegmentation/thuync/checkpoints/PyTorch/"
+		"log_dir": "/gdrive/MyDrive/MotionSegExperiments/dev/tensorboardLogs/"
 	}
 }

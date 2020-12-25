@@ -90,9 +90,10 @@ class BaseTrainer:
 	def addGraph_Tensorboard(self):
 		if self.data_loader == None:
 			return
-		data, _ = next(iter(self.data_loader))
+		flow, data, _ = next(iter(self.data_loader))
+		flow = flow.to(self.device)
 		data = data.to(self.device)
-		self.writer_train.addGraph(self.model, data)
+		self.writer_train.addGraph(self.model, (flow, data))
 
 	def train(self):
 		#first lets write the graph to tensorboardX if possible

@@ -18,8 +18,8 @@ def opticalFlowCalc(pre_img, img):
 	hsv = np.zeros_like(pre_img)
 	hsv[...,1] = 255
 
-	pre_img = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
-	img = cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY)
+	pre_img = cv2.cvtColor(pre_img,cv2.COLOR_BGR2GRAY)
+	img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
 	flow = cv2.calcOpticalFlowFarneback(pre_img,img, None, 0.5, 3, 15, 3, 5, 1.2, 0)
 	mag, ang = cv2.cartToPolar(flow[...,0], flow[...,1])
@@ -95,7 +95,7 @@ class SegmentationDataset(Dataset):
 		one_hot=False, normalize=True, mean=[0.485,0.456,0.406], std=[0.229,0.224,0.225]):
 
 		# Get list of image and label files
-		self.prev_image_files, self.image_files, self.label_files = [], []
+		self.prev_image_files, self.image_files, self.label_files = [], [], []
 		fp = open(pairs_file, "r")
 		lines = fp.read().split("\n")
 		lines = [line.strip() for line in lines if len(line)]

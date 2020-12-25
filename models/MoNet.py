@@ -82,7 +82,7 @@ class MoNet(BaseModel):
 	backbone_os = 8
 
 	def __init__(self, backbone='resnet18', num_classes=2, pretrained_backbone=None):
-		super(ICNet, self).__init__()
+		super(MoNet, self).__init__()
 		if 'resnet' in backbone:
 			if backbone=='resnet18':
 				n_layers = 18
