@@ -126,9 +126,9 @@ class MoNet(BaseModel):
 			self.backbone._load_pretrained_model(pretrained_backbone)
 
 
-	def forward(self, input):
+	def forward(self, OFlow, input):
 		# Sub1
-		x_sub1 = self.conv_sub1(input)
+		x_sub1 = self.conv_sub1(OFlow)
 
 		# Sub2
 		x_sub2 = F.interpolate(input, scale_factor=0.5, mode='bilinear', align_corners=True)
