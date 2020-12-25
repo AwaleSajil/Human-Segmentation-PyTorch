@@ -155,7 +155,7 @@ class Trainer(BaseTrainer):
 
 				if (batch_idx==n_iter-2) and(self.verbosity>=2):
 					self.writer_valid.add_image('valid/input', make_grid(data[:,:3,:,:].cpu(), nrow=4, normalize=True))
-					self.writer_valid.add_image('valid/OpticalFlow', make_grid(data[:,:3,:,:].cpu(), nrow=4, normalize=True))
+					self.writer_valid.add_image('valid/OpticalFlow', make_grid(OFlow[:,:3,:,:].cpu(), nrow=4, normalize=True))
 					self.writer_valid.add_image('valid/label', make_grid(target.unsqueeze(1).cpu(), nrow=4, normalize=True))
 					if type(output)==tuple or type(output)==list:
 						self.writer_valid.add_image('valid/output', make_grid(F.softmax(output[0], dim=1)[:,1:2,:,:].cpu(), nrow=4, normalize=True))
