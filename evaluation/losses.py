@@ -109,3 +109,30 @@ def custom_icnet_loss(logits, targets, alpha=[0.4, 0.16]):
 
 	else:
 		return ce_loss(logits, targets)
+
+#------------------------------------------------------------------------------
+#   Custom loss for ICNet-semantic-branchv0.0.1
+#------------------------------------------------------------------------------
+def custom_icnet_loss_semantic_branch_v0_0_1(logits, targets, alpha=[0.4]):
+	"""
+	logits: (torch.float32)
+		[train_mode] (_x_24_cls, x_24_cls) of shape
+						(N, C, H/4, W/4),(N, C, H/16, W/16)
+
+		[valid_mode] x_124_cls of shape (N, C, H, W)
+
+	targets: (torch.float32) shape (N, H, W), value {0,1,...,C-1}
+	"""
+	if type(logits)==tuple:
+		with torch.no_grad():
+			targets = torch.unsqueeze(targets, dim=1)
+			target1 = F.interpolate(targets, size=logits[0].shape[-2:], mode='bilinear', align_corners=True)[:,0,...]
+			target3 = F.interpolate(targets, size=logits[1].shape[-2:], mode='bilinear', align_corners=True)[:,0,...]
+
+		loss1 = ce_loss(logits[0], target1)
+		loss3 = ce_loss(logits[1], target3)
+		return loss1 + alpha[0]*loss3
+
+	else:
+		return ce_loss(logits, targets)
+

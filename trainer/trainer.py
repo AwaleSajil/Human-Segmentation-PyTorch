@@ -26,7 +26,6 @@ def poly_lr_scheduler(optimizer, init_lr, curr_iter, max_iter, power=0.9):
 class Trainer(BaseTrainer):
 	"""
 	Trainer class
-
 	Note:
 		Inherited from BaseTrainer.
 	"""
@@ -52,17 +51,14 @@ class Trainer(BaseTrainer):
 	def _train_epoch(self, epoch):
 		"""
 		Training logic for an epoch
-
 		:param epoch: Current training epoch.
 		:return: A log that contains all information you want to save.
-
 		Note:
 			If you have additional information to record, for example:
 				> additional_log = {"x": x, "y": y}
 			merge it with log before return. i.e.
 				> log = {**log, **additional_log}
 				> return log
-
 			The metrics in log must have the key 'metrics'.
 		"""
 		print("Train on epoch...")
@@ -73,12 +69,11 @@ class Trainer(BaseTrainer):
 		total_loss = 0
 		total_metrics = np.zeros(len(self.metrics))
 		n_iter = len(self.data_loader)
-		for batch_idx, (OFlow, data, target) in tqdm(enumerate(self.data_loader), total=n_iter):
+		for batch_idx, (data, target) in tqdm(enumerate(self.data_loader), total=n_iter):
 			curr_iter = batch_idx + (epoch-1)*n_iter
-			OFlow, data, target = OFlow.to(self.device), data.to(self.device), target.to(self.device)
+			data, target = data.to(self.device), target.to(self.device)
 			self.optimizer.zero_grad()
-
-			output = self.model(OFlow, data)
+			output = self.model(data)
 			loss = self.loss(output, target)
 			loss.backward()
 			self.optimizer.step()
@@ -88,7 +83,6 @@ class Trainer(BaseTrainer):
 
 			if (batch_idx==n_iter-2) and (self.verbosity>=2):
 				self.writer_train.add_image('train/input', make_grid(data[:,:3,:,:].cpu(), nrow=4, normalize=True))
-				self.writer_train.add_image('train/OpticalFlow', make_grid(OFlow[:,:3,:,:].cpu(), nrow=4, normalize=True))
 				self.writer_train.add_image('train/label', make_grid(target.unsqueeze(1).cpu(), nrow=4, normalize=True))
 				if type(output)==tuple or type(output)==list:
 					self.writer_train.add_image('train/output', make_grid(F.softmax(output[0], dim=1)[:,1:2,:,:].cpu(), nrow=4, normalize=True))
@@ -131,9 +125,7 @@ class Trainer(BaseTrainer):
 	def _valid_epoch(self, epoch):
 		"""
 		Validate after training an epoch
-
 		:return: A log that contains information about validation
-
 		Note:
 			The validation metrics in log must have the key 'valid_metrics'.
 		"""
@@ -145,9 +137,9 @@ class Trainer(BaseTrainer):
 
 		with torch.no_grad():
 			# Validate
-			for batch_idx, (OFlow, data, target) in tqdm(enumerate(self.valid_data_loader), total=n_iter):
-				OFlow, data, target = OFlow.to(self.device), data.to(self.device), target.to(self.device)
-				output = self.model(OFlow, data)
+			for batch_idx, (data, target) in tqdm(enumerate(self.valid_data_loader), total=n_iter):
+				data, target = data.to(self.device), target.to(self.device)
+				output = self.model(data)
 				loss = self.loss(output, target)
 
 				total_val_loss += loss.item()
@@ -155,7 +147,6 @@ class Trainer(BaseTrainer):
 
 				if (batch_idx==n_iter-2) and(self.verbosity>=2):
 					self.writer_valid.add_image('valid/input', make_grid(data[:,:3,:,:].cpu(), nrow=4, normalize=True))
-					self.writer_valid.add_image('valid/OpticalFlow', make_grid(OFlow[:,:3,:,:].cpu(), nrow=4, normalize=True))
 					self.writer_valid.add_image('valid/label', make_grid(target.unsqueeze(1).cpu(), nrow=4, normalize=True))
 					if type(output)==tuple or type(output)==list:
 						self.writer_valid.add_image('valid/output', make_grid(F.softmax(output[0], dim=1)[:,1:2,:,:].cpu(), nrow=4, normalize=True))
