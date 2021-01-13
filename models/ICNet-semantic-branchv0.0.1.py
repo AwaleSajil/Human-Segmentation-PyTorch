@@ -152,7 +152,8 @@ class ICNet(BaseModel):
 			_x_cff_24= F.interpolate(x_cff_24, scale_factor=4, mode='bilinear', align_corners=True)
 			_x_24_cls = self.conv_cls(x_cff_24)
 			# return x_124_cls, x_12_cls, x_24_cls
-			return _x_24_cls, x_24_cls
+			# return _x_24_cls, x_24_cls
+			return _x_24_cls
 
 
 		else:

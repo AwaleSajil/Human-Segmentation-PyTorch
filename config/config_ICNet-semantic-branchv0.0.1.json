@@ -6,7 +6,7 @@
 		"type": "ICNet",
 		"args": {
 			"backbone": "resnet18",
-			"num_classes": 2,
+			"num_classes": 19,
 			"pretrained_backbone": "/data4/livesegmentation/thuync/PyTorch-pretrained/resnet18.pth"
 		}
 	},

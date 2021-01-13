@@ -129,10 +129,10 @@ class SegmentationDataset(Dataset):
 
 		#specific for cityscape
 		self.n_cats = 19
-        self.lb_ignore = 255
-        self.lb_map = np.arange(256).astype(np.uint8)
-        for el in labels_info:
-            self.lb_map[el['id']] = el['trainId']
+		self.lb_ignore = 255
+		self.lb_map = np.arange(256).astype(np.uint8)
+		for el in labels_info:
+			self.lb_map[el['id']] = el['trainId']
 
 		print("[Dataset] Checking file paths...")
 		error_flg = False
