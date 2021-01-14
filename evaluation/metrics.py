@@ -3,6 +3,7 @@
 #------------------------------------------------------------------------------
 import torch
 from torch.nn import functional as F
+import numpy as np
 
 
 #------------------------------------------------------------------------------
@@ -34,7 +35,7 @@ def miou(logits, targets, eps=1e-6):
 	return iou.mean()
 
 def mIOU_corrected(pred, label, num_classes=19):
-	pred = torch.argmax(logits, dim=1, keepdim=True).type(torch.int64).squeeze(1)
+	pred = torch.argmax(pred, dim=1, keepdim=True).type(torch.int64).squeeze(1)
 	label = label.type(torch.int64)
 	iou_list = list()
 	present_iou_list = list()
