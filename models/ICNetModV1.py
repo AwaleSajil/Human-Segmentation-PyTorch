@@ -150,11 +150,10 @@ class ICNetModV1(BaseModel):
 			# x_cff_12 = F.interpolate(x_cff_12, scale_factor=2, mode='bilinear', align_corners=True)
 			# x_124_cls = self.conv_cls(x_cff_12)
 			_x_cff_24= F.interpolate(x_cff_24, scale_factor=4, mode='bilinear', align_corners=True)
-			_x_24_cls = self.conv_cls(x_cff_24)
+			_x_24_cls = self.conv_cls(_x_cff_24)
 			# return x_124_cls, x_12_cls, x_24_cls
-			# return _x_24_cls, x_24_cls
-			return _x_24_cls
-
+			return _x_24_cls, x_24_cls
+			# return _x_24_cls
 
 		else:
 			# Cascade Feature Fusion
@@ -165,7 +164,7 @@ class ICNetModV1(BaseModel):
 			# x_cff_12 = F.interpolate(x_cff_12, scale_factor=2, mode='bilinear', align_corners=True)
 			# x_124_cls = self.conv_cls(x_cff_12)
 			_x_cff_24 = F.interpolate(x_cff_24, scale_factor=4, mode='bilinear', align_corners=True)
-			_x_24_cls = self.conv_cls(x_cff_24)
+			_x_24_cls = self.conv_cls(_x_cff_24)
 
 			_x_24_cls = F.interpolate(_x_24_cls, scale_factor=4, mode='bilinear', align_corners=True)
 			return _x_24_cls
