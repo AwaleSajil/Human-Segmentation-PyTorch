@@ -131,6 +131,7 @@ class SegmentationDataset(Dataset):
 		self.n_cats = 19
 		self.lb_ignore = 255
 		self.lb_map = np.arange(256).astype(np.uint8)
+    # lb_map = [0 ,1,2,... 255]
 		for el in labels_info:
 			self.lb_map[el['id']] = el['trainId']
 
@@ -173,7 +174,7 @@ class SegmentationDataset(Dataset):
 		img_file, label_file = self.image_files[idx], self.label_files[idx]
 		image = cv2.imread(img_file)[...,::-1]
 		label = cv2.imread(label_file, 0)
-
+    
 		#chnagethe id to trainid if any
 		label = self.lb_map[label]
 
@@ -200,8 +201,11 @@ class SegmentationDataset(Dataset):
 		# label[label>0] = 1 #here for every pixel, if the value is greater than 0 then replace it with 1
 		# if self.one_hot:
 		# 	label = (np.arange(label.max()+1) == label[...,None]).astype(int)
+		label[label < 0] = 255
+		label[label > (self.n_cats - 1)] = 255
 
 		# Convert to tensor and return
 		image = torch.tensor(image.copy(), dtype=torch.float32)
 		label = torch.tensor(label.copy(), dtype=torch.float32)
+
 		return image, label

@@ -35,13 +35,13 @@ def dice_loss_with_sigmoid(sigmoid, targets, smooth=1.0):
 	return dice
 
 
-def ce_loss(logits, targets):
+def ce_loss(logits, targets, _ignore_index = -100):
 	"""
 	logits: (torch.float32)  shape (N, C, H, W)
 	targets: (torch.float32) shape (N, H, W), value {0,1,...,C-1}
 	"""
 	targets = targets.type(torch.int64)
-	ce_loss = F.cross_entropy(logits, targets)
+	ce_loss = F.cross_entropy(logits, targets, ignore_index = _ignore_index)
 	return ce_loss
 
 
@@ -113,7 +113,7 @@ def custom_icnet_loss(logits, targets, alpha=[0.4, 0.16]):
 #------------------------------------------------------------------------------
 #   Custom loss for ICNet-semantic-branchv0.0.1
 #------------------------------------------------------------------------------
-def custom_icnet_loss_semantic_branch_v0_0_1(logits, targets, alpha=[0.4]):
+def custom_icnet_loss_semantic_branch_v0_0_1(logits, targets, alpha=[0.4], ignore_index=255):
 	"""
 	logits: (torch.float32)
 		[train_mode] (_x_24_cls, x_24_cls) of shape
@@ -126,13 +126,13 @@ def custom_icnet_loss_semantic_branch_v0_0_1(logits, targets, alpha=[0.4]):
 	if type(logits)==tuple:
 		with torch.no_grad():
 			targets = torch.unsqueeze(targets, dim=1)
-			target1 = F.interpolate(targets, size=logits[0].shape[-2:], mode='bilinear', align_corners=True)[:,0,...]
-			target3 = F.interpolate(targets, size=logits[1].shape[-2:], mode='bilinear', align_corners=True)[:,0,...]
+			target1 = F.interpolate(targets, size=logits[0].shape[-2:], mode='nearest')[:,0,...]
+			target3 = F.interpolate(targets, size=logits[1].shape[-2:], mode='nearest')[:,0,...]
 
-		loss1 = ce_loss(logits[0], target1)
-		loss3 = ce_loss(logits[1], target3)
+		loss1 = ce_loss(logits[0], target1, ignore_index)
+		loss3 = ce_loss(logits[1], target3, ignore_index)
 		return loss1 + alpha[0]*loss3
 
 	else:
-		return ce_loss(logits, targets)
+		return ce_loss(logits, targets, ignore_index)
 
