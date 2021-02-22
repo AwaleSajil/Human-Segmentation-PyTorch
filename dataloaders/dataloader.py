@@ -385,7 +385,12 @@ class SegmentationDataset(Dataset):
 
 
 		#convert the image t grayscale if stated
-		image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+		#convert back to 3 channel grayscale
+		image = np.zeros_like(img)
+		image[:,:,0] = gray
+		image[:,:,1] = gray
+		image[:,:,2] = gray
 
 		# Preprocess label
 		# label[label>0] = 1 #here for every pixel, if the value is greater than 0 then replace it with 1
