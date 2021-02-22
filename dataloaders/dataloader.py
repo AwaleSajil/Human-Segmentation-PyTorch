@@ -383,6 +383,10 @@ class SegmentationDataset(Dataset):
 			image = (image - self.mean) / self.std
 		image = np.transpose(image, axes=(2, 0, 1))
 
+
+		#convert the image t grayscale if stated
+		image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
 		# Preprocess label
 		# label[label>0] = 1 #here for every pixel, if the value is greater than 0 then replace it with 1
 		# if self.one_hot:

@@ -6,7 +6,7 @@
 		"type": "ICNetModV1",
 		"args": {
 			"backbone": "resnet18",
-			"num_classes": 19,
+			"num_classes": 2,
 			"pretrained_backbone": "/content/resnet18-5c106cde.pth"
 		}
 	},
@@ -15,7 +15,7 @@
 		"type": "SegmentationDataLoader",
 		"args":{
 			"pairs_file": "dataset/train_mask.txt",
-			"color_channel": "RGB",
+			"color_channel": "grayscale",
 			"resize": 320,
 			"padding_value": 0,
 			"is_training": true,
@@ -37,7 +37,7 @@
 		"type": "SegmentationDataLoader",
 		"args":{
 			"pairs_file": "dataset/valid_mask.txt",
-			"color_channel": "RGB",
+			"color_channel": "grayscale",
 			"resize": 320,
 			"padding_value": 0,
 			"is_training": false,
