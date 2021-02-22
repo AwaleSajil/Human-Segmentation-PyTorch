@@ -377,20 +377,20 @@ class SegmentationDataset(Dataset):
 		image = transforms.resize_image(image, expected_size=self.resize, pad_value=self.padding_value, mode=cv2.INTER_LINEAR)
 		label = transforms.resize_image(label, expected_size=self.resize, pad_value=self.padding_value, mode=cv2.INTER_NEAREST)
 
+
+		#convert the image t grayscale if stated
+		img = np.array(image, dtype=np.uint8)
+		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+		#convert back to 3 channel grayscale
+		image = cv2.cvtColor(gray,cv2.COLOR_GRAY2RGB)
+
+
 		# Preprocess image
 		if self.normalize:
 			image = image.astype(np.float32) / 255.0
 			image = (image - self.mean) / self.std
 		image = np.transpose(image, axes=(2, 0, 1))
 
-
-		#convert the image t grayscale if stated
-		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-		#convert back to 3 channel grayscale
-		image = np.zeros_like(img)
-		image[:,:,0] = gray
-		image[:,:,1] = gray
-		image[:,:,2] = gray
 
 		# Preprocess label
 		# label[label>0] = 1 #here for every pixel, if the value is greater than 0 then replace it with 1
