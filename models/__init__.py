@@ -10,5 +10,5 @@ from models.ICNetModV1 import ICNetModV1
 
 __all__ = [
 	'UNetPlus',
-	'UNet', 'DeepLabV3Plus', 'BiSeNet', 'PSPNet', 'ICNet', 'MoNet', 'ICNetModV1'
+	'UNet', 'DeepLabV3Plus', 'BiSeNet', 'PSPNet', 'ICNet', 'MoNet', 'ICNetModV1', 'ICNet_grayscale'
 ]

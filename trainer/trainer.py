@@ -41,10 +41,10 @@ class Trainer(BaseTrainer):
 		self.init_lr = optimizer.param_groups[0]['lr']
 
 
-	def _eval_metrics(self, output, target):
+	def _eval_metrics(self, output, target, num_classes):
 		acc_metrics = np.zeros(len(self.metrics))
 		for i, metric in enumerate(self.metrics):
-			acc_metrics[i] += metric(output, target)
+			acc_metrics[i] += metric(output, target, num_classes)
 		return acc_metrics
 
 
@@ -74,12 +74,13 @@ class Trainer(BaseTrainer):
 			data, target = data.to(self.device), target.to(self.device)
 			self.optimizer.zero_grad()
 			output = self.model(data)
-			loss = self.loss(output, target)
+			# added num_classes_class_param for corrected miou and loss 
+			loss = self.loss(output, target, self.config["arch"]["args"]["num_classes"])
 			loss.backward()
 			self.optimizer.step()
 
 			total_loss += loss.item()
-			total_metrics += self._eval_metrics(output, target)
+			total_metrics += self._eval_metrics(output, target, self.config["arch"]["args"]["num_classes"])
 
 			if (batch_idx==n_iter-2) and (self.verbosity>=2):
 				self.writer_train.add_image('train/input', make_grid(data[:,:3,:,:].cpu(), nrow=4, normalize=True))
@@ -140,10 +141,10 @@ class Trainer(BaseTrainer):
 			for batch_idx, (data, target) in tqdm(enumerate(self.valid_data_loader), total=n_iter):
 				data, target = data.to(self.device), target.to(self.device)
 				output = self.model(data)
-				loss = self.loss(output, target)
+				loss = self.loss(output, target, self.config["arch"]["args"]["num_classes"])
 
 				total_val_loss += loss.item()
-				total_val_metrics += self._eval_metrics(output, target)
+				total_val_metrics += self._eval_metrics(output, target, self.config["arch"]["args"]["num_classes"])
 
 				if (batch_idx==n_iter-2) and(self.verbosity>=2):
 					self.writer_valid.add_image('valid/input', make_grid(data[:,:3,:,:].cpu(), nrow=4, normalize=True))

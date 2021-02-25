@@ -123,6 +123,27 @@ def custom_icnet_miou(logits, targets):
 
 
 #------------------------------------------------------------------------------
+#   Custom IoU for ICnet(corrected)
+#------------------------------------------------------------------------------
+def custom_icnet_miou_corrected(logits, targets, num_classes):
+	"""
+	logits: (torch.float32)
+		[train_mode] (x_124_cls, x_12_cls, x_24_cls) of shape
+						(N, C, H/4, W/4), (N, C, H/8, W/8), (N, C, H/16, W/16)
+
+		[valid_mode] x_124_cls of shape (N, C, H, W)
+
+	targets: (torch.float32) shape (N, H, W), value {0,1,...,C-1}
+	"""
+	if type(logits)==tuple:
+		targets = torch.unsqueeze(targets, dim=1)
+		targets = F.interpolate(targets, size=logits[0].shape[-2:], mode='nearest')[:,0,...]
+		return mIOU_corrected(logits[0], targets, num_classes)
+	else:
+		return mIOU_corrected(logits, targets, num_classes)
+
+
+#------------------------------------------------------------------------------
 #   Custom IoU for ICNet-semantic-branchv0.0.1
 
 #------------------------------------------------------------------------------

@@ -1,0 +1,88 @@
+{
+	"name": "HumanSeg",
+	"n_gpu": 1,
+	
+	"arch": {
+		"type": "ICNet",
+		"args": {
+			"backbone": "resnet18",
+			"num_classes": 2,
+			"pretrained_backbone": "/content/resnet18-5c106cde.pth"
+		}
+	},
+
+	"train_loader": {
+		"type": "SegmentationDataLoader",
+		"args":{
+			"pairs_file": "dataset/train_mask_server.txt",
+			"color_channel": "grayscale",
+			"resize": 320,
+			"padding_value": 255,
+			"is_training": true,
+			"noise_std": 0,
+			"crop_range": [1.0, 1.0],
+			"flip_hor": 0.5,
+			"rotate": 0.0,
+			"angle": 10,
+			"normalize": true,
+			"one_hot": false,
+			"shuffle": true,
+			"batch_size": 32,
+			"n_workers": 24,
+			"pin_memory": true
+		}
+	},
+
+	"valid_loader": {
+		"type": "SegmentationDataLoader",
+		"args":{
+			"pairs_file": "dataset/valid_mask_server.txt",
+			"color_channel": "grayscale",
+			"resize": 320,
+			"padding_value": 255,
+			"is_training": false,
+			"normalize": true,
+			"one_hot": false,
+			"shuffle": false,
+			"batch_size": 32,
+			"n_workers": 24,
+			"pin_memory": true
+		}
+	},
+
+	"optimizer": {
+		"type": "SGD",
+		"args":{
+			"lr": 5e-3,
+			"momentum": 0.9,
+			"weight_decay": 1e-8
+		}
+	},
+
+	"loss": "custom_icnet_loss_corrected",
+	"metrics": [
+		"custom_icnet_miou_corrected"
+	],
+
+	"lr_scheduler": {
+		"type":"StepLR",
+		"args":{
+			"step_size": 100,
+			"gamma": 1.0
+		}
+	},
+
+	"trainer": {
+		"epochs": 80,
+		"save_dir": "/gdrive/MyDrive/MotionSegExperiments/dev/Checkpoints/",
+		"save_freq": 2,
+		"verbosity": 2,
+		"monitor": "valid_loss",
+		"monitor_mode": "min"
+	},
+
+	"visualization":{
+		"tensorboardX": true,
+		"log_dir": "/gdrive/MyDrive/MotionSegExperiments/dev/tensorboardLogs/"
+	}
+}
