@@ -11,10 +11,12 @@
 		}
 	},
 
+    "freeze_layer_block":[0, 2, 3, 4, 5, 6],
+
 	"train_loader": {
 		"type": "SegmentationDataLoader",
 		"args":{
-			"pairs_file": "dataset/train_mask_server.txt",
+			"pairs_file": "dataset/train_mask.txt",
 			"color_channel": "grayscale",
 			"resize": 320,
 			"padding_value": 255,
@@ -36,7 +38,7 @@
 	"valid_loader": {
 		"type": "SegmentationDataLoader",
 		"args":{
-			"pairs_file": "dataset/valid_mask_server.txt",
+			"pairs_file": "dataset/valid_mask.txt",
 			"color_channel": "grayscale",
 			"resize": 320,
 			"padding_value": 255,

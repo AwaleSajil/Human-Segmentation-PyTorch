@@ -12,6 +12,8 @@ import dataloaders.dataloader as module_data
 from utils.logger import Logger
 from trainer.trainer import Trainer
 
+import sys
+
 
 #------------------------------------------------------------------------------
 #   Get instance
@@ -29,7 +31,18 @@ def main(config, resume):
 	# Build model architecture
 	model = get_instance(module_arch, 'arch', config)
 	img_sz = config["train_loader"]["args"]["resize"]
+	# model.summary(input_shape=[(3, img_sz, img_sz)])
+
+	for i, child in enumerate(model.children()):
+		print("Layer Block Number ------- ", i)
+		# print(child)
+		if (i in config["freeze_layer_block"]):
+			# if the current layer block is in the list
+			for param in child.parameters():
+				param.requires_grad = False 
+
 	model.summary(input_shape=[(3, img_sz, img_sz)])
+	# sys.exit()
 
 	# Setup data_loader instances
 	train_loader = get_instance(module_data, 'train_loader', config).loader
